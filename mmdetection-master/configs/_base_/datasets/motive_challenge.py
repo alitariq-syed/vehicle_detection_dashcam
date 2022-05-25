@@ -6,7 +6,7 @@ img_norm_cfg = dict(
 train_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(type='LoadAnnotations', with_bbox=True),
-    dict(type='Resize', img_scale=(1280, 720), keep_ratio=True),
+    dict(type='Resize', img_scale=(1280/4, 720/4), keep_ratio=True),
     dict(type='RandomFlip', flip_ratio=0.5),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='Pad', size_divisor=32),
@@ -17,7 +17,7 @@ test_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(
         type='MultiScaleFlipAug',
-        img_scale=(1280, 720),
+        img_scale=(1280/4, 720/4),
         flip=False,
         transforms=[
             dict(type='Resize', keep_ratio=True),
@@ -33,17 +33,17 @@ data = dict(
     workers_per_gpu=2,
     train=dict(
         type=dataset_type,
-        ann_file=data_root + 'train/train_gt.json',
+        ann_file=data_root + 'train/valid_gt.json',
         img_prefix=data_root + 'train/train_images/',
         pipeline=train_pipeline),
     val=dict(
         type=dataset_type,
-        ann_file=data_root + 'train/train_gt.json',
+        ann_file=data_root + 'train/valid_gt.json',
         img_prefix=data_root + 'train/train_images/',
         pipeline=test_pipeline),
     test=dict(
         type=dataset_type,
-        ann_file=data_root + 'train/train_gt.json',
+        ann_file=data_root + 'train/valid_gt.json',
         img_prefix=data_root + 'train/train_images/',
         pipeline=test_pipeline))
 evaluation = dict(interval=1, metric='bbox')

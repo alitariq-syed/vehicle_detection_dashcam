@@ -39,7 +39,10 @@ for item in train_gt["images"]:
 
 for item in train_gt["annotations"]:
     if item["image_id"] in valid_ids:
+        item.update({"iscrowd":0})
+        item.update({"area":100})
         print(item)
+        
         valid_annotations.append(item)
         
         

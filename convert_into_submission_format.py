@@ -25,6 +25,7 @@ add "id":0 ; that is sequential id for each detection box
 id_count=0
 results_submission = []
 for item in results_coco:
+    item["bbox"] = [int(val) for val in item["bbox"]]
     results_submission.append({"image_id":item["image_id"],
                                "bbox":item["bbox"],
                                "category_id":item["category_id"],

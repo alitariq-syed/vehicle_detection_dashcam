@@ -25,11 +25,13 @@ for img in file_list:
     
     test_gt.append({"file_name":img,
                     "id":id_count,
-                    "height ":height,
+                    "height":height,
                     "width":width,})
     id_count+=1
     
-test_gt_dict = dict({"images":test_gt})
+test_gt_dict = dict({"images":test_gt, 
+                    "categories": [{"id": 1, "name": "Car", "supercategory": "none"}, {"id": 2, "name": "Truck", "supercategory": "none"}, {"id": 3, "name": "StopSign", "supercategory": "none"}, {"id": 4, "name": "traffic_lights", "supercategory": "none"}]})
+
 
 with open("mmdetection-master/data/public_test/test_gt.json",'w') as f:
     json.dump(test_gt_dict, f)

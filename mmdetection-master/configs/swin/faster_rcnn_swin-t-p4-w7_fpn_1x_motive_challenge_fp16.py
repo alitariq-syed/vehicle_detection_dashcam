@@ -3,8 +3,8 @@ _base_ = [
     '../_base_/datasets/motive_challenge.py',
     '../_base_/schedules/schedule_1x.py', '../_base_/default_runtime.py'
 ]
-pretrained = 'https://github.com/SwinTransformer/storage/releases/download/v1.0.0/swin_tiny_patch4_window7_224.pth'  # noqa
-#pretrained = 'https://download.openmmlab.com/mmdetection/v2.0/swin/mask_rcnn_swin-t-p4-w7_fpn_fp16_ms-crop-3x_coco/mask_rcnn_swin-t-p4-w7_fpn_fp16_ms-crop-3x_coco_20210908_165006-90a4008c.pth'  # noqa
+#pretrained = 'https://github.com/SwinTransformer/storage/releases/download/v1.0.0/swin_tiny_patch4_window7_224.pth'  # noqa
+pretrained = 'https://download.openmmlab.com/mmdetection/v2.0/swin/mask_rcnn_swin-t-p4-w7_fpn_fp16_ms-crop-3x_coco/mask_rcnn_swin-t-p4-w7_fpn_fp16_ms-crop-3x_coco_20210908_165006-90a4008c.pth'  # noqa
 
 model = dict(
     type='FasterRCNN',
@@ -42,6 +42,6 @@ optimizer = dict(
         }))
 lr_config = dict(warmup_iters=1000, step=[8, 11])
 runner = dict(max_epochs=12)
-#fp16 = dict(loss_scale=dict(init_scale=512))
+fp16 = dict(loss_scale=dict(init_scale=512))
 #fp16 = dict(loss_scale=512.)
 #fp16 = dict(loss_scale='dynamic')

@@ -1,10 +1,14 @@
 _base_ = [
     '../_base_/models/faster_rcnn_r50_fpn.py',
-    '../_base_/datasets/motive_challenge.py',
+    '../_base_/datasets/TBX11K_tb_only.py',
     '../_base_/schedules/schedule_1x.py', '../_base_/default_runtime.py'
 ]
-#pretrained = 'https://github.com/SwinTransformer/storage/releases/download/v1.0.0/swin_tiny_patch4_window7_224.pth'  # noqa
-pretrained = 'https://download.openmmlab.com/mmdetection/v2.0/swin/mask_rcnn_swin-t-p4-w7_fpn_fp16_ms-crop-3x_coco/mask_rcnn_swin-t-p4-w7_fpn_fp16_ms-crop-3x_coco_20210908_165006-90a4008c.pth'  # noqa
+pretrained = 'https://github.com/SwinTransformer/storage/releases/download/v1.0.0/swin_tiny_patch4_window7_224.pth'  # noqa
+#train using swin-t classification model weights (weight sharing)
+#pretrained = '../../../mmclassification/tutorial_swin_C1/epoch_300.pth'
+
+#for neck and other output layers
+load_path ='https://download.openmmlab.com/mmdetection/v2.0/swin/mask_rcnn_swin-t-p4-w7_fpn_ms-crop-3x_coco/mask_rcnn_swin-t-p4-w7_fpn_ms-crop-3x_coco_20210906_131725-bacf6f7b.pth'
 
 model = dict(
     type='FasterRCNN',
@@ -27,11 +31,15 @@ model = dict(
         convert_weights=True,
         init_cfg=dict(type='Pretrained', checkpoint=pretrained)),
     neck=dict(in_channels=[96, 192, 384, 768]))
+   # 		init_cfg=dict(type='Pretrained', checkpoint=load_path)),
+   # rpn_head=dict(init_cfg=dict(type='Pretrained', checkpoint=load_path)),
+   # roi_head=dict(init_cfg=dict(type='Pretrained', checkpoint=load_path))
+   # )
 
 optimizer = dict(
     _delete_=True,
     type='AdamW',
-    lr=0.0001,
+    lr=0.0005,
     betas=(0.9, 0.999),
     weight_decay=0.05,
     paramwise_cfg=dict(
@@ -40,8 +48,10 @@ optimizer = dict(
             'relative_position_bias_table': dict(decay_mult=0.),
             'norm': dict(decay_mult=0.)
         }))
-lr_config = dict(warmup_iters=1000, step=[8, 11])
-runner = dict(max_epochs=12)
-#fp16 = dict(loss_scale=dict(init_scale=512))
-fp16 = dict(loss_scale=512.)
-#fp16 = dict(loss_scale='dynamic')
+lr_config = dict(
+    policy='CosineAnnealing',
+    min_lr=0,
+    warmup='linear',
+    warmup_iters=250,
+    warmup_ratio=0.001)
+runner = dict(max_epochs=300)

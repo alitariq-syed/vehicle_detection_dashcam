@@ -14,6 +14,20 @@ gt_path = "mmdetection-master/data/train/train_gt.json"
 with open(gt_path) as f:
     train_gt = json.load(f)
     
+#try removing images that have no annotations (image id 38732)
+train_images = []
+train_annotations = []
+for item in train_gt["images"]:
+    if item["id"] < 38732:
+        # print(item)
+        train_images.append(item)
+for item in train_gt["annotations"]:
+    if item["image_id"] < 38732:
+        # print(item)
+        train_annotations.append(item)        
+train_gt = dict({"annotations":train_annotations,"categories":train_gt["categories"],"images":train_images})
+
+    
 """
 image ids range from 0 - 39997
 
@@ -44,9 +58,20 @@ for item in train_gt["annotations"]:
         print(item)
         
         valid_annotations.append(item)
-        
+
+# train_gt["categories"] = [{'id': 1, 'name': 'Car', 'supercategory': 'none'},
+#   {'id': 2, 'name': 'Truck', 'supercategory': 'none'},
+#   {'id': 3, 'name': 'StopSign', 'supercategory': 'none'},
+#   {'id': 4, 'name': 'traffic_lights', 'supercategory': 'none'},
+#   {'id': 5, 'name': 'background', 'supercategory': 'none'}]        
         
 valid_gt = dict({"annotations":valid_annotations,"categories":train_gt["categories"],"images":valid_images})
 
 with open("mmdetection-master/data/train/valid_gt.json",'w') as f:
     json.dump(valid_gt, f)
+    
+    
+
+    
+# with open("mmdetection-master/data/train/train_gt.json",'w') as f:
+#     json.dump(train_gt, f)    

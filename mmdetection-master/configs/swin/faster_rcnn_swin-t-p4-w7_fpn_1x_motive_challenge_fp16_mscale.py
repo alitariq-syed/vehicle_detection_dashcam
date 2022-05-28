@@ -6,6 +6,9 @@ _base_ = [
 #pretrained = 'https://github.com/SwinTransformer/storage/releases/download/v1.0.0/swin_tiny_patch4_window7_224.pth'  # noqa
 pretrained = 'https://download.openmmlab.com/mmdetection/v2.0/swin/mask_rcnn_swin-t-p4-w7_fpn_fp16_ms-crop-3x_coco/mask_rcnn_swin-t-p4-w7_fpn_fp16_ms-crop-3x_coco_20210908_165006-90a4008c.pth'  # noqa
 
+img_norm_cfg = dict(
+    mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
+	
 model = dict(
     type='FasterRCNN',
     backbone=dict(
@@ -40,7 +43,7 @@ train_pipeline = [
 	 dict(type='Resize',
 					img_scale=[(1280, 720), (640, 360), (320, 180), (160, 90),
 							   (320, 180), (320, 180), (320, 180), (320, 180),
-							   (224, 224), (224, 224), (224, 224)],
+							   (224, 224)],
 					multiscale_mode='value',	keep_ratio=True),
     dict(type='RandomFlip', flip_ratio=0.5),
     dict(type='Normalize', **img_norm_cfg),

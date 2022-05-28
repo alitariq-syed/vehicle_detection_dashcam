@@ -1,0 +1,1 @@
+{"config": "configs/swin/faster_rcnn_swin-t-p4-w7_fpn_1x_motive_challenge_fullCFG.py", "metric": {"bbox_mAP": 0.147, "bbox_mAP_50": 0.2, "bbox_mAP_75": 0.17, "bbox_mAP_s": 0.16, "bbox_mAP_m": -1.0, "bbox_mAP_l": -1.0, "bbox_mAP_copypaste": "0.147 0.200 0.170 0.160 -1.000 -1.000"}}

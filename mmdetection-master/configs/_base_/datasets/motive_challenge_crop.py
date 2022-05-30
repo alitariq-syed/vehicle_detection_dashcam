@@ -6,11 +6,47 @@ img_norm_cfg = dict(
 train_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(type='LoadAnnotations', with_bbox=True),
-    dict(type='Resize',
-                img_scale=[(1280, 720), (640, 360), (320, 180), (160, 90),
-                           (320, 180), (320, 180), (320, 180), (320, 180),
-                           (224, 224), (224, 224), (224, 224)],
-                multiscale_mode='value',	keep_ratio=True),
+	
+	dict(
+        type='AutoAugment',
+        policies=[[
+			dict(
+				type='RandomCrop',
+				crop_type='absolute',
+				crop_size=(180,320),
+				allow_negative_crop=False),
+				],
+				[
+                dict(
+				type='RandomCrop',
+				crop_type='absolute',
+				crop_size=(180,320),
+				allow_negative_crop=True),
+                  ],
+				  
+				  [
+                dict(
+				type='RandomCrop',
+				crop_type='absolute',
+				crop_size=(360,640),
+				allow_negative_crop=False),
+                  ],
+				  
+				  [
+                dict(
+				type='RandomCrop',
+				crop_type='absolute',
+				crop_size=(90,160),
+				allow_negative_crop=False),
+                  ],
+				  
+				  
+				  
+				  ]),		
+				  
+				
+	dict(type='Resize', img_scale=(180, 320), keep_ratio=True),
+
     dict(type='RandomFlip', flip_ratio=0.5),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='Pad', size_divisor=32),
@@ -21,7 +57,7 @@ test_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(
         type='MultiScaleFlipAug',
-        img_scale=(320, 180),
+        img_scale=(180, 320),
         flip=False,
         transforms=[
             dict(type='Resize', keep_ratio=True),
@@ -37,7 +73,9 @@ data = dict(
     workers_per_gpu=2,
     train=dict(
         type=dataset_type,
-        ann_file=data_root + 'train/train_gt.json',
+#        ann_file=data_root + 'train/train_gt.json',
+#        img_prefix=data_root + 'train/train_images/',
+        ann_file=data_root + 'train/valid_gt.json',
         img_prefix=data_root + 'train/train_images/',
         pipeline=train_pipeline),
     val=dict(

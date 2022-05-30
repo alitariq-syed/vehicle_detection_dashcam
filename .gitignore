@@ -2,3 +2,5 @@
 *.jpeg
 *.jpg
 content/
+runs/
+demo_data/

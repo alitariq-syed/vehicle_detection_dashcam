@@ -40,7 +40,11 @@ train_pipeline = [
 				allow_negative_crop=False),
                   ],
 				  
-				  [	dict(type='Resize', img_scale=(720, 1280), keep_ratio=True),]
+				  [	dict(
+				type='RandomCrop',
+				crop_type='absolute',
+				crop_size=(720,1280),
+				allow_negative_crop=True),]
 				  
 				  ]),		
 				  

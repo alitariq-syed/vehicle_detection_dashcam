@@ -10,7 +10,7 @@ import json
 import numpy as np
 
 # results_path = "mmdetection-master/tutorial_swin/my_results.bbox.json"
-results_path = "mmdetection-master/tutorial_swin/my_results.bbox_kaggle_20.json"
+results_path = "my_results.bbox_kaggle_60.json"
 
 with open(results_path) as f:
     results_coco = json.load(f)
@@ -41,5 +41,5 @@ results_submission_format = dict({"annotations":results_submission,
                                   "images":images_gt["images"],
                                   "categories":[{"id": 1, "name": "Car", "supercategory": "none"}, {"id": 2, "name": "Truck", "supercategory": "none"}, {"id": 3, "name": "StopSign", "supercategory": "none"}, {"id": 4, "name": "traffic_lights", "supercategory": "none"}]})
 
-with open("mmdetection-master/tutorial_swin/my_results_kaggle_20_for_submission.json",'w') as f:
+with open("mmdetection-master/tutorial_swin/my_results.bbox_kaggle_60_for_submission.json",'w') as f:
     json.dump(results_submission_format, f)

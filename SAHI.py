@@ -33,7 +33,8 @@ overlap_width_ratio = 0.2
 # source_image_dir = "data/train/train_images" #"demo_data/"
 # source_image_dir = "/content/vehicle_detection_dashcam/mmdetection-master/data/train/train_images"
 #source_image_dir = "/content/vehicle_detection_dashcam/mmdetection-master/data/public_test/test2_images"
-source_image_dir = "data/public_test/test2_images"
+#source_image_dir = "data/public_test/test2_images"
+source_image_dir = "data/train/train_images"
 
 predict(
     model_type=model_type,
@@ -47,9 +48,9 @@ predict(
     overlap_height_ratio=overlap_height_ratio,
     overlap_width_ratio=overlap_width_ratio,
     
-    dataset_json_path = "data/public_test/test_gt.json",#"/content/vehicle_detection_dashcam/mmdetection-master/data/public_test/test_gt.json", #"data/train/train_gt.json",
+    dataset_json_path = "data/train/valid_gt.json",#"/content/vehicle_detection_dashcam/mmdetection-master/data/public_test/test_gt.json", #"data/train/train_gt.json",
     verbose=0,
     export_pickle=False,
-    novisual=True,
-    project="/content/drive/MyDrive/Motive AI Challenge/tutorial_swin/kaggle_output/runs/predict",
+    novisual=False,
+    project="tutorial_swin/kaggle_output/runs/valid_set",
     name= "exp")

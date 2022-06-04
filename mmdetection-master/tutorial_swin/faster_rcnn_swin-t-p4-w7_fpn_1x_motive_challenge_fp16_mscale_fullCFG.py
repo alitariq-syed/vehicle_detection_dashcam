@@ -119,8 +119,39 @@ img_norm_cfg = dict(
 train_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(type='LoadAnnotations', with_bbox=True),
-    dict(type='MinIoURandomCrop', min_ious=(0.1, 1.0), min_crop_size=0.3),
-    dict(type='Resize', img_scale=(320, 180), keep_ratio=True),
+    dict(
+        type='AutoAugment',
+        policies=[[{
+            'type': 'RandomCrop',
+            'crop_type': 'absolute',
+            'crop_size': (180, 320),
+            'allow_negative_crop': False
+        }],
+                  [{
+                      'type': 'RandomCrop',
+                      'crop_type': 'absolute',
+                      'crop_size': (180, 320),
+                      'allow_negative_crop': True
+                  }],
+                  [{
+                      'type': 'RandomCrop',
+                      'crop_type': 'absolute',
+                      'crop_size': (360, 640),
+                      'allow_negative_crop': False
+                  }],
+                  [{
+                      'type': 'RandomCrop',
+                      'crop_type': 'absolute',
+                      'crop_size': (90, 160),
+                      'allow_negative_crop': False
+                  }],
+                  [{
+                      'type': 'RandomCrop',
+                      'crop_type': 'absolute',
+                      'crop_size': (720, 1280),
+                      'allow_negative_crop': True
+                  }]]),
+    dict(type='Resize', img_scale=(180, 320), keep_ratio=True),
     dict(type='RandomFlip', flip_ratio=0.5),
     dict(
         type='Normalize',
@@ -135,7 +166,7 @@ test_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(
         type='MultiScaleFlipAug',
-        img_scale=(320, 180),
+        img_scale=(180, 320),
         flip=False,
         transforms=[
             dict(type='Resize', keep_ratio=True),
@@ -152,19 +183,47 @@ test_pipeline = [
 ]
 data = dict(
     samples_per_gpu=48,
-    workers_per_gpu=1,
+    workers_per_gpu=2,
     train=dict(
         type='CocoDataset',
-        ann_file='data/train/valid_gt.json',
+        ann_file='data/train/train_gt.json',
         img_prefix='data/train/train_images/',
         pipeline=[
             dict(type='LoadImageFromFile'),
             dict(type='LoadAnnotations', with_bbox=True),
             dict(
-                type='MinIoURandomCrop',
-                min_ious=(0.1, 1.0),
-                min_crop_size=0.3),
-            dict(type='Resize', img_scale=(320, 180), keep_ratio=True),
+                type='AutoAugment',
+                policies=[[{
+                    'type': 'RandomCrop',
+                    'crop_type': 'absolute',
+                    'crop_size': (180, 320),
+                    'allow_negative_crop': False
+                }],
+                          [{
+                              'type': 'RandomCrop',
+                              'crop_type': 'absolute',
+                              'crop_size': (180, 320),
+                              'allow_negative_crop': True
+                          }],
+                          [{
+                              'type': 'RandomCrop',
+                              'crop_type': 'absolute',
+                              'crop_size': (360, 640),
+                              'allow_negative_crop': False
+                          }],
+                          [{
+                              'type': 'RandomCrop',
+                              'crop_type': 'absolute',
+                              'crop_size': (90, 160),
+                              'allow_negative_crop': False
+                          }],
+                          [{
+                              'type': 'RandomCrop',
+                              'crop_type': 'absolute',
+                              'crop_size': (720, 1280),
+                              'allow_negative_crop': True
+                          }]]),
+            dict(type='Resize', img_scale=(180, 320), keep_ratio=True),
             dict(type='RandomFlip', flip_ratio=0.5),
             dict(
                 type='Normalize',
@@ -184,7 +243,7 @@ data = dict(
             dict(type='LoadImageFromFile'),
             dict(
                 type='MultiScaleFlipAug',
-                img_scale=(320, 180),
+                img_scale=(180, 320),
                 flip=False,
                 transforms=[
                     dict(type='Resize', keep_ratio=True),
@@ -202,13 +261,15 @@ data = dict(
         classes=('Car', 'Truck', 'StopSign', 'traffic_lights')),
     test=dict(
         type='CocoDataset',
-        ann_file='data/public_test/test_gt.json',
-        img_prefix='data/public_test/test2_images/',
+        # ann_file='data/public_test/test_gt.json',
+        # img_prefix='data/public_test/test2_images/',
+        ann_file='data/train/valid_gt.json',
+        img_prefix='data/train/train_images/',
         pipeline=[
             dict(type='LoadImageFromFile'),
             dict(
                 type='MultiScaleFlipAug',
-                img_scale=(320, 180),
+                img_scale=(180, 320),
                 flip=False,
                 transforms=[
                     dict(type='Resize', keep_ratio=True),
@@ -224,7 +285,7 @@ data = dict(
                 ])
         ],
         classes=('Car', 'Truck', 'StopSign', 'traffic_lights')))
-evaluation = dict(interval=3, metric='bbox')
+evaluation = dict(interval=5, metric='bbox')
 optimizer = dict(
     type='AdamW',
     lr=0.0001,
@@ -237,19 +298,19 @@ optimizer = dict(
             norm=dict(decay_mult=0.0))))
 optimizer_config = dict(grad_clip=None)
 lr_config = dict(
-    policy='step',
+    policy='CosineAnnealing',
     warmup='linear',
     warmup_iters=1000,
     warmup_ratio=0.001,
-    step=[8, 11])
-runner = dict(type='EpochBasedRunner', max_epochs=12)
+    min_lr=0)
+runner = dict(type='EpochBasedRunner', max_epochs=60)
 checkpoint_config = dict(interval=1, max_keep_ckpts=1)
-log_config = dict(interval=100, hooks=[dict(type='TextLoggerHook')])
+log_config = dict(interval=807, hooks=[dict(type='TextLoggerHook')])
 custom_hooks = [dict(type='NumClassCheckHook')]
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
 load_from = None
-resume_from = None
+resume_from = '/content/drive/MyDrive/Motive AI Challenge/tutorial_swin/kaggle_output/mscrop_training/epoch_59.pth'
 workflow = [('train', 1)]
 opencv_num_threads = 0
 mp_start_method = 'fork'
@@ -257,6 +318,7 @@ auto_scale_lr = dict(enable=False, base_batch_size=16)
 pretrained = 'https://download.openmmlab.com/mmdetection/v2.0/swin/mask_rcnn_swin-t-p4-w7_fpn_fp16_ms-crop-3x_coco/mask_rcnn_swin-t-p4-w7_fpn_fp16_ms-crop-3x_coco_20210908_165006-90a4008c.pth'
 fp16 = dict(loss_scale=512.0)
 classes = ('Car', 'Truck', 'StopSign', 'traffic_lights')
-work_dir = '/content/drive/MyDrive/Motive AI Challenge/tutorial_swin'
+work_dir = '/content/drive/MyDrive/Motive AI Challenge/tutorial_swin/kaggle_output/mscrop_training'
 seed = 0
 gpu_ids = range(0, 1)
+total_epochs = 60

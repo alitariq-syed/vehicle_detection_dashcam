@@ -1,5 +1,4 @@
-_base_ = [ 	'../_base_/datasets/motive_challenge_crop.py',
-			'../_base_/default_runtime.py']
+_base_ = '../_base_/default_runtime.py'
 # model settings
 model = dict(
     type='YOLOV3',
@@ -102,25 +101,24 @@ test_pipeline = [
         ])
 ]
 data = dict(
-    samples_per_gpu=24,
-    workers_per_gpu=4,
+    samples_per_gpu=2,
+    workers_per_gpu=2,
     train=dict(
-        type='RepeatDataset',  # use RepeatDataset to speed up training
-        times=10,
-        dataset=dict(
-            type=dataset_type,
-            ann_file=data_root + 'annotations/instances_train2017.json',
-            img_prefix=data_root + 'train2017/',
-            pipeline=train_pipeline)),
+        type=dataset_type,
+        #ann_file=data_root + 'train/train_gt.json',
+        #img_prefix=data_root + 'train/train_images/',
+        ann_file=data_root + 'train/valid_gt.json',
+        img_prefix=data_root + 'train/train_images/',
+        pipeline=train_pipeline),
     val=dict(
         type=dataset_type,
-        ann_file=data_root + 'annotations/instances_val2017.json',
-        img_prefix=data_root + 'val2017/',
+        ann_file=data_root + 'train/valid_gt.json',
+        img_prefix=data_root + 'train/train_images/',
         pipeline=test_pipeline),
     test=dict(
         type=dataset_type,
-        ann_file=data_root + 'annotations/instances_val2017.json',
-        img_prefix=data_root + 'val2017/',
+        ann_file=data_root + 'public_test/test_gt.json',
+        img_prefix=data_root + 'public_test/test2_images/',
         pipeline=test_pipeline))
 # optimizer
 optimizer = dict(type='SGD', lr=0.003, momentum=0.9, weight_decay=0.0005)
@@ -140,4 +138,4 @@ find_unused_parameters = True
 # NOTE: `auto_scale_lr` is for automatically scaling LR,
 # USER SHOULD NOT CHANGE ITS VALUES.
 # base_batch_size = (8 GPUs) x (24 samples per GPU)
-auto_scale_lr = dict(base_batch_size=192)
+auto_scale_lr = dict(enable=False, base_batch_size=192)

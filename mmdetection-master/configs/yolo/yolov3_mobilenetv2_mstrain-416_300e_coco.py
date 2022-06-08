@@ -1,4 +1,5 @@
-_base_ = '../_base_/default_runtime.py'
+_base_ = [ 	'../_base_/datasets/motive_challenge_crop.py',
+			'../_base_/default_runtime.py']
 # model settings
 model = dict(
     type='YOLOV3',
